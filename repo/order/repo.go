@@ -67,3 +67,32 @@ func (r *OrderRepository) DeleteOrder(orderId uint) error {
 
 	return nil
 }
+
+// update
+func (r *OrderRepository) UpdateOrder(order core.Order) (*core.Order, error) {
+	tx := r.db.Begin()
+	// delete order items
+	err := r.db.Where("order_id = ?", order.ID).Delete(&core.Item{})
+	if err.Error != nil {
+		return nil, err.Error
+	}
+
+	// update order
+	err = r.db.Save(&order)
+	if err.Error != nil {
+		tx.Rollback()
+		return &core.Order{}, err.Error
+	}
+	if err.RowsAffected <= 0 {
+		tx.Rollback()
+		return &core.Order{}, gorm.ErrRecordNotFound
+	}
+
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	return &order, nil
+}

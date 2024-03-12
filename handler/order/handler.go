@@ -82,3 +82,42 @@ func (h *Handler) DeleteOrder(ctx *gin.Context) {
 		"message": "Success delete",
 	})
 }
+
+func (h *Handler) UpdateOrder(ctx *gin.Context) {
+	// Get orderId from path and convert to uint
+	orderId, err := strconv.Atoi(ctx.Param("orderId"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid order id",
+		})
+		return
+	}
+
+	// Binding request body to struct
+	var OrderRequest core.OrderRequest
+	if err := ctx.Bind(&OrderRequest); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	// Call orderService to update order
+	order, err := h.orderService.UpdateOrder(uint(orderId), OrderRequest)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"message": "order not found",
+			})
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "fail update order",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	// Return response if success
+	ctx.JSON(http.StatusOK, order)
+}

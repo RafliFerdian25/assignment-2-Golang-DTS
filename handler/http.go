@@ -11,7 +11,7 @@ func NewHttpServer(orderHandler *order.Handler) {
 
 	r.GET("/orders", orderHandler.GetAllOrders)
 	r.POST("/orders", orderHandler.CreateOrder)
-	r.PUT("/orders/:orderId", orderHandler.GetAllOrders)
+	r.PUT("/orders/:orderId", orderHandler.UpdateOrder)
 	r.DELETE("/orders/:orderId", orderHandler.DeleteOrder)
 
 	r.Run(":8000")

@@ -63,3 +63,27 @@ func (s *Service) DeleteOrder(orderId uint) error {
 
 	return nil
 }
+
+// update
+func (s *Service) UpdateOrder(orderId uint, OrderRequest core.OrderRequest) (*core.OrderResponse, error) {
+	var order core.Order
+	err := copier.Copy(&order, &OrderRequest)
+	if err != nil {
+		return nil, err
+	}
+	order.ID = orderId
+
+	// call repository to update order
+	updatedOrder, err := s.orderRepo.UpdateOrder(order)
+	if err != nil {
+		return nil, err
+	}
+
+	var getOrders core.OrderResponse
+	err = copier.Copy(&getOrders, updatedOrder)
+	if err != nil {
+		return nil, err
+	}
+
+	return &getOrders, nil
+}
