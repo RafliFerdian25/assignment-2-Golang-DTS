@@ -39,6 +39,7 @@ func (s *Service) CreateOrder(OrderRequest core.OrderRequest) (*core.OrderRespon
 		return nil, err
 	}
 
+	// call repository to create order
 	createdOrder, err := s.orderRepo.CreateOrder(order)
 	if err != nil {
 		return nil, err
@@ -51,4 +52,14 @@ func (s *Service) CreateOrder(OrderRequest core.OrderRequest) (*core.OrderRespon
 	}
 
 	return &getOrders, nil
+}
+
+func (s *Service) DeleteOrder(orderId uint) error {
+	// call repository to delete order
+	err := s.orderRepo.DeleteOrder(orderId)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

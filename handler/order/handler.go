@@ -4,8 +4,10 @@ import (
 	"assignment-2/core"
 	"assignment-2/service/order"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type Handler struct {
@@ -27,7 +29,7 @@ func (h *Handler) GetAllOrders(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, orders)
 }
 
-func (h *Handler) CreateOrders(ctx *gin.Context) {
+func (h *Handler) CreateOrder(ctx *gin.Context) {
 	// Binding request body to struct
 	var OrderRequest core.OrderRequest
 	if err := ctx.Bind(&OrderRequest); err != nil {
@@ -49,4 +51,34 @@ func (h *Handler) CreateOrders(ctx *gin.Context) {
 
 	// Return response if success
 	ctx.JSON(http.StatusOK, order)
+}
+
+func (h *Handler) DeleteOrder(ctx *gin.Context) {
+	// Get orderId from path and convert to uint
+	orderId, err := strconv.Atoi(ctx.Param("orderId"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid order id",
+		})
+		return
+	}
+
+	err = h.orderService.DeleteOrder(uint(orderId))
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"message": "order not found",
+			})
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "fail delete order",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Success delete",
+	})
 }

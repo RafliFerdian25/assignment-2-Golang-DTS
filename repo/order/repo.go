@@ -44,3 +44,26 @@ func (r *OrderRepository) CreateOrder(order core.Order) (*core.Order, error) {
 
 	return &order, err
 }
+
+func (r *OrderRepository) DeleteOrder(orderId uint) error {
+	// delete order
+	tx := r.db.Begin()
+	err := r.db.Delete(&core.Order{}, orderId)
+	if err.Error != nil {
+		tx.Rollback()
+		return err.Error
+	}
+
+	if err.RowsAffected <= 0 {
+		tx.Rollback()
+		return gorm.ErrRecordNotFound
+	}
+
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return nil
+}
