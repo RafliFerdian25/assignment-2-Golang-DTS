@@ -32,7 +32,7 @@ func (s *Service) GetAllOrders() ([]core.OrderResponse, error) {
 	return getOrders, err
 }
 
-func (s *Service) CreateOrder(OrderRequest core.OrderRequest) (*core.Order, error) {
+func (s *Service) CreateOrder(OrderRequest core.OrderRequest) (*core.OrderResponse, error) {
 	var order core.Order
 	err := copier.Copy(&order, &OrderRequest)
 	if err != nil {
@@ -44,5 +44,11 @@ func (s *Service) CreateOrder(OrderRequest core.OrderRequest) (*core.Order, erro
 		return nil, err
 	}
 
-	return createdOrder, nil
+	var getOrders core.OrderResponse
+	err = copier.Copy(&getOrders, createdOrder)
+	if err != nil {
+		return nil, err
+	}
+
+	return &getOrders, nil
 }
