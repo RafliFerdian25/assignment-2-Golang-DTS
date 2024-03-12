@@ -16,10 +16,10 @@ func NewOrderRepository(db *gorm.DB) *OrderRepository {
 	}
 }
 
-func (r *OrderRepository) GetAllOrders() ([]core.OrderResponse, error) {
-	orders := []core.OrderResponse{}
+func (r *OrderRepository) GetAllOrders() ([]core.Order, error) {
+	orders := []core.Order{}
 
-	err := r.db.Model(&core.Order{}).Preload("Items").Find(&orders).Error
+	err := r.db.Preload("Items").Find(&orders).Error
 
 	return orders, err
 }

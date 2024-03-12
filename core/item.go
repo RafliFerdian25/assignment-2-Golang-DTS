@@ -5,7 +5,7 @@ type Item struct {
 	Code        string `json:"itemCode"`
 	Description string `json:"description"`
 	Quantity    uint   `json:"quantity"`
-	Order_id    uint
+	OrderId     uint   `json:"order_id"`
 }
 
 type ItemResponse struct {
