@@ -10,7 +10,7 @@ func NewHttpServer(orderHandler *order.Handler) {
 	r := gin.Default()
 
 	r.GET("/orders", orderHandler.GetAllOrders)
-	r.POST("/orders", orderHandler.GetAllOrders)
+	r.POST("/orders", orderHandler.CreateOrders)
 	r.PUT("/orders/:orderId", orderHandler.GetAllOrders)
 	r.DELETE("/orders/:orderId", orderHandler.GetAllOrders)
 

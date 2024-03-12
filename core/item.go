@@ -13,3 +13,9 @@ type ItemResponse struct {
 	Description string `json:"description"`
 	Quantity    uint   `json:"quantity"`
 }
+
+type ItemRequest struct {
+	Code        string `json:"itemCode"`
+	Description string `json:"description"`
+	Quantity    uint   `json:"quantity"`
+}

@@ -31,3 +31,18 @@ func (s *Service) GetAllOrders() ([]core.OrderResponse, error) {
 
 	return getOrders, err
 }
+
+func (s *Service) CreateOrder(OrderRequest core.OrderRequest) (*core.Order, error) {
+	var order core.Order
+	err := copier.Copy(&order, &OrderRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	createdOrder, err := s.orderRepo.CreateOrder(order)
+	if err != nil {
+		return nil, err
+	}
+
+	return createdOrder, nil
+}

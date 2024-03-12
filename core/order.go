@@ -16,9 +16,8 @@ type OrderResponse struct {
 	Items        []ItemResponse `json:"items" gorm:"foreignkey:order_id;references:id"`
 }
 
-type OrderImpl interface {
-	GetAllOrders() ([]Order, error)
-	CreateOrder() ([]Order, error)
-	UpdateOrder() ([]Order, error)
-	DeleteOrder() ([]Order, error)
+type OrderRequest struct {
+	CustomerName string        `json:"customerName"`
+	OrderedAt    time.Time     `json:"orderedAt"`
+	Items        []ItemRequest `json:"items"`
 }
